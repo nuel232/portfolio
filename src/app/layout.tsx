@@ -1,23 +1,26 @@
+import type { Metadata } from "next";
 import "./globals.css";
-import { Inter } from "next/font/google";
-import { Metadata } from "next";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Kelechi - Portfolio",
-  description: "Full-stack developer specializing in web and blockchain technologies",
+  title: "Kelechi - Full Stack Developer",
+  description: "Personal portfolio of Kelechi, a full-stack developer specializing in web and blockchain technologies",
+  icons: {
+    icon: '/profile2.jpg',
+  },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <head>
+        {/* EmailJS will be initialized in the Contact component directly */}
+      </head>
+      <body>
         <ThemeProviderWrapper>
           {children}
         </ThemeProviderWrapper>

@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { EnvelopeClosedIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
+import emailjs from '@emailjs/browser';
 
 const socialLinks = [
-  { name: "GitHub", icon: "github", url: "https://github.com/" },
-  { name: "LinkedIn", icon: "linkedin", url: "https://linkedin.com/" },
-  { name: "Twitter", icon: "twitter", url: "https://twitter.com/" },
-  { name: "Instagram", icon: "instagram", url: "https://instagram.com/" },
-  { name: "Medium", icon: "medium", url: "https://medium.com/" },
+  { name: "GitHub", icon: "github", url: "https://github.com/nuel232" },
+  { name: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/kelechi-nwankwoala-29b297285" },
+  { name: "Twitter", icon: "twitter", url: "https://twitter.com/_kelechixx_?s=21" },
+  { name: "Instagram", icon: "instagram", url: "https://instagram.com/dtw.nuell" },
 ];
 
+// Replace these with your own EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_osil19f"; // Update this with your service ID
+const EMAILJS_TEMPLATE_ID = "template_3zkqn7x"; // Update this with your template ID
+const EMAILJS_PUBLIC_KEY = "or85boDqm4NH4s2cg"; // Update this with your public key
+
 const Contact = () => {
+  const formRef = useRef<HTMLFormElement>(null);
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -20,6 +26,12 @@ const Contact = () => {
   const [formStep, setFormStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  // Initialize EmailJS when the component mounts
+  useEffect(() => {
+    emailjs.init("or85boDqm4NH4s2cg");
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -37,15 +49,31 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError("");
     
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    // Here you would typically send the form data to a server
-    console.log("Form submitted:", formState);
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      // Send email using EmailJS
+      const templateParams = {
+        name: formState.name,
+        email: formState.email,
+        message: formState.message,
+      };
+      
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+      
+      console.log('Email sent successfully:', response);
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setIsSubmitting(false);
+      setSubmitError("Failed to send your message. Please try again later.");
+    }
   };
 
   return (
@@ -62,7 +90,12 @@ const Contact = () => {
           {/* Contact Form */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
             {!isSubmitted ? (
-              <form onSubmit={handleSubmit}>
+              <form ref={formRef} onSubmit={handleSubmit}>
+                {submitError && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+                    <p>{submitError}</p>
+                  </div>
+                )}
                 <div className="relative mb-4">
                   <div className="flex justify-between mb-2">
                     <div className="flex space-x-2">
@@ -257,8 +290,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Email</h4>
-                    <a href="mailto:kelechi@example.com" className="text-blue-500 hover:underline">
-                      kelechi@example.com
+                    <a href="mailto:nwankwoala#@gmail.com" className="text-blue-500 hover:underline">
+                      nwankwoala3@gmail.com
                     </a>
                   </div>
                 </div>
@@ -326,8 +359,6 @@ function getSocialIcon(iconName: string) {
       return "🐦";
     case "instagram":
       return "📷";
-    case "medium":
-      return "✍️";
     default:
       return "🔗";
   }

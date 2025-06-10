@@ -66,3 +66,50 @@ To customize the portfolio for your own use:
 2. Replace the logo and favicon
 3. Adjust the color scheme in Tailwind config if desired
 4. Add or remove sections as needed
+
+## EmailJS Setup for Contact Form
+
+To enable the contact form to send real emails:
+
+1. Create an account at [EmailJS](https://www.emailjs.com/)
+2. Create a new Email Service (Gmail, Outlook, etc.)
+3. Create an Email Template with the following variables:
+   - `from_name`: Sender's name
+   - `from_email`: Sender's email
+   - `message`: The message content
+
+4. Get your credentials and update the following files:
+
+   - In `src/components/Contact.tsx`:
+     ```javascript
+     const EMAILJS_SERVICE_ID = "your_service_id"; 
+     const EMAILJS_TEMPLATE_ID = "your_template_id"; 
+     const EMAILJS_PUBLIC_KEY = "your_public_key"; 
+     ```
+
+   - In `src/app/layout.tsx`:
+     ```javascript
+     emailjs.init("your_public_key");
+     ```
+
+5. Test the contact form to ensure emails are being sent correctly.
+
+## Development
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deploy
+
+```bash
+npm run start
+```
