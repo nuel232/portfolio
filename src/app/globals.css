@@ -147,3 +147,52 @@ select:focus-visible {
 section {
   @apply scroll-mt-20;
 }
+
+/* Profile image animation */
+@keyframes profile_animate {
+  0% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+}
+
+/* Improved profile border animation to match the screenshot */
+@keyframes border_animate {
+  0% {
+    border-top-right-radius: 40.0892% 30.0138%;
+    border-bottom-left-radius: 69.0028% 40.0028%;
+    border-bottom-right-radius: 30.0138% 69.8615%;
+    border-top-left-radius: 59.9862% 59.9954%;
+  }
+  50% {
+    border-top-right-radius: 30% 60%;
+    border-bottom-left-radius: 50% 40%;
+    border-bottom-right-radius: 70% 30%;
+    border-top-left-radius: 40% 70%;
+  }
+  100% {
+    border-top-right-radius: 40.0892% 30.0138%;
+    border-bottom-left-radius: 69.0028% 40.0028%;
+    border-bottom-right-radius: 30.0138% 69.8615%;
+    border-top-left-radius: 59.9862% 59.9954%;
+  }
+}
+
+.profile_animate {
+  animation: border_animate 8s ease-in-out infinite;
+}
+
+.home_img {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  border: 9px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-self: center;
+  width: 300px;
+  height: 300px;
+  animation: profile_animate 8s ease-in-out infinite;
+}

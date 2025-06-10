@@ -4,6 +4,7 @@ import { Waves } from "@/components/ui/waves-background";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const Hero = () => {
   const { theme } = useTheme();
@@ -75,23 +76,39 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Right side - animated circles with original colors */}
+          {/* Right side - profile image with animated borders */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex justify-center"
           >
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 opacity-20 dark:opacity-30 animate-pulse"></div>
-              <div className="absolute inset-4 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 opacity-20 dark:opacity-30 animate-pulse [animation-delay:0.5s]"></div>
-              <div className="absolute inset-8 rounded-full bg-gradient-to-r from-green-400 to-teal-300 opacity-20 dark:opacity-30 animate-pulse [animation-delay:1s]"></div>
-              <div className="absolute inset-12 rounded-full bg-gradient-to-r from-yellow-400 to-orange-300 opacity-20 dark:opacity-30 animate-pulse [animation-delay:1.5s]"></div>
-              <div className="absolute inset-16 rounded-full bg-gradient-to-r from-red-400 to-pink-300 opacity-20 dark:opacity-30 animate-pulse [animation-delay:2s]"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full bg-white dark:bg-black shadow-lg flex items-center justify-center">
-                  <span className="text-4xl">💻</span>
-                </div>
+            <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
+              {/* Glow effects behind the profile image */}
+              <div className="absolute w-full h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-20 dark:opacity-30 blur-xl"></div>
+              <div className="absolute w-[90%] h-[90%] rounded-full bg-gradient-to-r from-teal-400 to-blue-400 opacity-20 dark:opacity-30 blur-xl animate-pulse"></div>
+              
+              {/* Profile image with animated border */}
+              <div className="profile_animate w-full h-full overflow-hidden relative z-10">
+                <Image
+                  src="/profile.jpg"
+                  alt="Kelechi"
+                  fill
+                  sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, 384px"
+                  className="object-cover"
+                  style={{ width: '100%', height: '100%' }}
+                  priority
+                />
+                {/* Animated border overlay */}
+                <div 
+                  className="absolute inset-0 profile_animate z-20 pointer-events-none" 
+                  style={{
+                    border: theme === "dark" ? "9px solid rgba(255, 255, 255, 0.3)" : "9px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: theme === "dark" 
+                      ? "0 0 20px rgba(255, 255, 255, 0.15)" 
+                      : "0 0 20px rgba(0, 0, 0, 0.1)"
+                  }}
+                />
               </div>
             </div>
           </motion.div>
