@@ -6,9 +6,9 @@ import Projects from "@/components/Projects";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+    <div className="relative min-h-screen bg-white dark:bg-black text-black dark:text-white overflow-x-hidden">
       <Navbar />
-      <main>
+      <main className="relative w-full">
         <Hero />
         <Projects />
         <About />

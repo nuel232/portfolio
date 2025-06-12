@@ -33,6 +33,22 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Control body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // Prevent scrolling on the body when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling when menu is closed
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      // Cleanup - ensure scrolling is re-enabled when component unmounts
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   // Toggle theme
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -129,9 +145,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
-          mobileMenuOpen ? "max-h-60" : "max-h-0"
-        }`}
+        className={`md:hidden transition-all duration-300 ${
+          mobileMenuOpen ? "max-h-screen" : "max-h-0"
+        } overflow-hidden`}
       >
         <div className="container mx-auto px-4 py-2 bg-white dark:bg-gray-900">
           <nav className="flex flex-col space-y-3 pb-4">

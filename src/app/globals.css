@@ -77,6 +77,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-overflow-scrolling: touch; /* Enables momentum scrolling on iOS */
+    overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile browsers */
+    touch-action: pan-y; /* Allows vertical scroll but disables other touch actions */
+    position: relative; /* Establish a positioning context */
   }
 }
 
@@ -98,6 +102,7 @@
 /* Custom scroll behavior */
 html {
   scroll-behavior: smooth;
+  height: 100%; /* Ensure html takes full height */
 }
 
 /* Custom scrollbar */
@@ -195,4 +200,11 @@ section {
   width: 300px;
   height: 300px;
   animation: profile_animate 8s ease-in-out infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  html, body {
+    overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+  }
 }
