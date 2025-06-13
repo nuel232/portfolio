@@ -189,7 +189,7 @@ const About = () => {
               {/* Download CV Button */}
               <div className="mb-6">
                 <a 
-                  href="/portfolio/CV.pdf" 
+                  href="/CV.pdf" 
                   download
                   className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg transition-colors shadow-lg hover:shadow-blue-600/20"
                 >
