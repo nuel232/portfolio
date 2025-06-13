@@ -14,8 +14,8 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "Person",
             "name": "Kelechi",
-            "url": "https://your-portfolio-domain.com",
-            "image": "https://your-portfolio-domain.com/profile2.jpg",
+            "url": "https://nwankwoala.com.ng",
+            "image": "https://nwankwoala.com.ng/profile2.jpg",
             "sameAs": [
               "https://github.com/your-github-username",
               "https://linkedin.com/in/your-linkedin-username",

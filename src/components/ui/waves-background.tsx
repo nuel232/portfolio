@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface WavesProps {
@@ -174,8 +174,21 @@ export function Waves({
     a: 0,
     set: false,
   })
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
     const canvas = canvasRef.current
     const container = containerRef.current
     
@@ -350,6 +363,7 @@ export function Waves({
     maxCursorMove,
     xGap,
     yGap,
+    isMobile,
   ])
 
   return (
@@ -363,18 +377,24 @@ export function Waves({
         className,
       )}
     >
-      <div
-        className={cn(
-          "absolute top-0 left-0 rounded-full",
-          "w-2 h-2 bg-foreground/10",
-        )}
-        style={{
-          transform:
-            "translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)",
-          willChange: "transform",
-        }}
-      />
-      <canvas ref={canvasRef} className="block w-full h-full" />
+      {isMobile ? (
+        <div className="w-full h-full bg-gradient-to-b from-blue-100/30 to-transparent" />
+      ) : (
+        <>
+          <div
+            className={cn(
+              "absolute top-0 left-0 rounded-full",
+              "w-2 h-2 bg-foreground/10",
+            )}
+            style={{
+              transform:
+                "translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)",
+              willChange: "transform",
+            }}
+          />
+          <canvas ref={canvasRef} className="block w-full h-full" />
+        </>
+      )}
     </div>
   )
 }

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Kelechi" }],
   creator: "Kelechi",
   publisher: "Kelechi",
-  metadataBase: new URL('https://your-portfolio-domain.com'),
+  metadataBase: new URL('https://nwankwoala.com.ng'),
   alternates: {
     canonical: '/',
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kelechi - Full Stack Developer",
     description: "Personal portfolio of Kelechi, a full-stack developer specializing in web and blockchain technologies",
-    url: 'https://your-portfolio-domain.com',
+    url: 'https://nwankwoala.com.ng',
     siteName: "Kelechi's Portfolio",
     images: [
       {

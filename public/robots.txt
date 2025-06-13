@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://your-portfolio-domain.com/sitemap.xml 
+Sitemap: https://nwankwoala.com.ng/sitemap.xml 
