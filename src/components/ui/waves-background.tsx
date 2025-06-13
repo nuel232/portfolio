@@ -188,168 +188,259 @@ export function Waves({
   }, []);
 
   useEffect(() => {
-    if (isMobile) return;
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    
-    if (!canvas || !container) return;
-    
-    ctxRef.current = canvas.getContext("2d")
-
-    function setSize() {
-      if (!container || !canvas) return;
-      boundingRef.current = container.getBoundingClientRect()
-      canvas.width = boundingRef.current.width
-      canvas.height = boundingRef.current.height
-    }
-
-    function setLines() {
-      const { width, height } = boundingRef.current
-      linesRef.current = []
-      const oWidth = width + 200,
-        oHeight = height + 30
-      const totalLines = Math.ceil(oWidth / xGap)
-      const totalPoints = Math.ceil(oHeight / yGap)
-      const xStart = (width - xGap * totalLines) / 2
-      const yStart = (height - yGap * totalPoints) / 2
-      for (let i = 0; i <= totalLines; i++) {
-        const pts: Point[] = []
-        for (let j = 0; j <= totalPoints; j++) {
-          pts.push({
-            x: xStart + xGap * i,
-            y: yStart + yGap * j,
-            wave: { x: 0, y: 0 },
-            cursor: { x: 0, y: 0, vx: 0, vy: 0 },
-          })
-        }
-        linesRef.current.push(pts)
+    if (isMobile) {
+      const canvas = canvasRef.current;
+      const container = containerRef.current;
+      if (!canvas || !container) return;
+      ctxRef.current = canvas.getContext("2d");
+      function setSize() {
+        if (!container || !canvas) return;
+        boundingRef.current = container.getBoundingClientRect();
+        canvas.width = boundingRef.current.width;
+        canvas.height = boundingRef.current.height;
       }
-    }
-
-    function movePoints(time: number) {
-      const lines = linesRef.current
-      const mouse = mouseRef.current
-      const noise = noiseRef.current
-      lines.forEach((pts) => {
-        pts.forEach((p: Point) => {
-          const move =
-            noise.perlin2(
-              (p.x + time * waveSpeedX) * 0.002,
-              (p.y + time * waveSpeedY) * 0.0015,
-            ) * 12
-          p.wave.x = Math.cos(move) * waveAmpX
-          p.wave.y = Math.sin(move) * waveAmpY
-
-          const dx = p.x - mouse.sx,
-            dy = p.y - mouse.sy
-          const dist = Math.hypot(dx, dy),
-            l = Math.max(175, mouse.vs)
-          if (dist < l) {
-            const s = 1 - dist / l
-            const f = Math.cos(dist * 0.001) * s
-            p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00065
-            p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00065
+      function setLines() {
+        const { width, height } = boundingRef.current;
+        linesRef.current = [];
+        const oWidth = width + 200,
+          oHeight = height + 30;
+        const totalLines = Math.ceil(oWidth / xGap);
+        const totalPoints = Math.ceil(oHeight / yGap);
+        const xStart = (width - xGap * totalLines) / 2;
+        const yStart = (height - yGap * totalPoints) / 2;
+        for (let i = 0; i <= totalLines; i++) {
+          const pts: Point[] = [];
+          for (let j = 0; j <= totalPoints; j++) {
+            pts.push({
+              x: xStart + xGap * i,
+              y: yStart + yGap * j,
+              wave: { x: 0, y: 0 },
+              cursor: { x: 0, y: 0, vx: 0, vy: 0 },
+            });
           }
-
-          p.cursor.vx += (0 - p.cursor.x) * tension
-          p.cursor.vy += (0 - p.cursor.y) * tension
-          p.cursor.vx *= friction
-          p.cursor.vy *= friction
-          p.cursor.x += p.cursor.vx * 2
-          p.cursor.y += p.cursor.vy * 2
-
-          p.cursor.x = Math.min(
-            maxCursorMove,
-            Math.max(-maxCursorMove, p.cursor.x),
-          )
-          p.cursor.y = Math.min(
-            maxCursorMove,
-            Math.max(-maxCursorMove, p.cursor.y),
-          )
-        })
-      })
-    }
-
-    function moved(point: Point, withCursor = true) {
-      const x = point.x + point.wave.x + (withCursor ? point.cursor.x : 0)
-      const y = point.y + point.wave.y + (withCursor ? point.cursor.y : 0)
-      return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 }
-    }
-
-    function drawLines() {
-      const { width, height } = boundingRef.current
-      const ctx = ctxRef.current
-      if (!ctx) return;
+          linesRef.current.push(pts);
+        }
+      }
+      function movePoints(time: number) {
+        const lines = linesRef.current;
+        const noise = noiseRef.current;
+        lines.forEach((pts) => {
+          pts.forEach((p: Point) => {
+            const move =
+              noise.perlin2(
+                (p.x + time * waveSpeedX) * 0.002,
+                (p.y + time * waveSpeedY) * 0.0015,
+              ) * 12;
+            p.wave.x = Math.cos(move) * waveAmpX;
+            p.wave.y = Math.sin(move) * waveAmpY;
+            // Do not update p.cursor on mobile
+          });
+        });
+      }
+      function moved(point: Point) {
+        const x = point.x + point.wave.x;
+        const y = point.y + point.wave.y;
+        return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+      }
+      function drawLines() {
+        const { width, height } = boundingRef.current;
+        const ctx = ctxRef.current;
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        ctx.beginPath();
+        ctx.strokeStyle = lineColor;
+        linesRef.current.forEach((points) => {
+          let p1 = moved(points[0]);
+          ctx.moveTo(p1.x, p1.y);
+          points.forEach((p, idx) => {
+            const isLast = idx === points.length - 1;
+            p1 = moved(p);
+            const p2 = moved(points[idx + 1] || points[points.length - 1]);
+            ctx.lineTo(p1.x, p1.y);
+            if (isLast) ctx.moveTo(p2.x, p2.y);
+          });
+        });
+        ctx.stroke();
+      }
+      function tick(t: number) {
+        movePoints(t);
+        drawLines();
+        requestAnimationFrame(tick);
+      }
+      function onResize() {
+        setSize();
+        setLines();
+      }
+      setSize();
+      setLines();
+      requestAnimationFrame(tick);
+      window.addEventListener("resize", onResize);
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
+    } else {
+      const canvas = canvasRef.current
+      const container = containerRef.current
       
-      ctx.clearRect(0, 0, width, height)
-      ctx.beginPath()
-      ctx.strokeStyle = lineColor
-      linesRef.current.forEach((points) => {
-        let p1 = moved(points[0], false)
-        ctx.moveTo(p1.x, p1.y)
-        points.forEach((p, idx) => {
-          const isLast = idx === points.length - 1
-          p1 = moved(p, !isLast)
-          const p2 = moved(
-            points[idx + 1] || points[points.length - 1],
-            !isLast,
-          )
-          ctx.lineTo(p1.x, p1.y)
-          if (isLast) ctx.moveTo(p2.x, p2.y)
+      if (!canvas || !container) return;
+      
+      ctxRef.current = canvas.getContext("2d")
+
+      function setSize() {
+        if (!container || !canvas) return;
+        boundingRef.current = container.getBoundingClientRect()
+        canvas.width = boundingRef.current.width
+        canvas.height = boundingRef.current.height
+      }
+
+      function setLines() {
+        const { width, height } = boundingRef.current
+        linesRef.current = []
+        const oWidth = width + 200,
+          oHeight = height + 30
+        const totalLines = Math.ceil(oWidth / xGap)
+        const totalPoints = Math.ceil(oHeight / yGap)
+        const xStart = (width - xGap * totalLines) / 2
+        const yStart = (height - yGap * totalPoints) / 2
+        for (let i = 0; i <= totalLines; i++) {
+          const pts: Point[] = []
+          for (let j = 0; j <= totalPoints; j++) {
+            pts.push({
+              x: xStart + xGap * i,
+              y: yStart + yGap * j,
+              wave: { x: 0, y: 0 },
+              cursor: { x: 0, y: 0, vx: 0, vy: 0 },
+            })
+          }
+          linesRef.current.push(pts)
+        }
+      }
+
+      function movePoints(time: number) {
+        const lines = linesRef.current
+        const mouse = mouseRef.current
+        const noise = noiseRef.current
+        lines.forEach((pts) => {
+          pts.forEach((p: Point) => {
+            const move =
+              noise.perlin2(
+                (p.x + time * waveSpeedX) * 0.002,
+                (p.y + time * waveSpeedY) * 0.0015,
+              ) * 12
+            p.wave.x = Math.cos(move) * waveAmpX
+            p.wave.y = Math.sin(move) * waveAmpY
+
+            const dx = p.x - mouse.sx,
+              dy = p.y - mouse.sy
+            const dist = Math.hypot(dx, dy),
+              l = Math.max(175, mouse.vs)
+            if (dist < l) {
+              const s = 1 - dist / l
+              const f = Math.cos(dist * 0.001) * s
+              p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00065
+              p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00065
+            }
+
+            p.cursor.vx += (0 - p.cursor.x) * tension
+            p.cursor.vy += (0 - p.cursor.y) * tension
+            p.cursor.vx *= friction
+            p.cursor.vy *= friction
+            p.cursor.x += p.cursor.vx * 2
+            p.cursor.y += p.cursor.vy * 2
+
+            p.cursor.x = Math.min(
+              maxCursorMove,
+              Math.max(-maxCursorMove, p.cursor.x),
+            )
+            p.cursor.y = Math.min(
+              maxCursorMove,
+              Math.max(-maxCursorMove, p.cursor.y),
+            )
+          })
         })
-      })
-      ctx.stroke()
-    }
+      }
 
-    function tick(t: number) {
-      const mouse = mouseRef.current
+      function moved(point: Point, withCursor = true) {
+        const x = point.x + point.wave.x + (withCursor ? point.cursor.x : 0)
+        const y = point.y + point.wave.y + (withCursor ? point.cursor.y : 0)
+        return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 }
+      }
 
-      mouse.sx += (mouse.x - mouse.sx) * 0.1
-      mouse.sy += (mouse.y - mouse.sy) * 0.1
-      mouse.v = Math.hypot(mouse.x - mouse.lx, mouse.y - mouse.ly)
-      mouse.vs = Math.min(mouse.v + 0.1, 40)
-      mouse.a = Math.atan2(mouse.y - mouse.ly, mouse.x - mouse.lx)
-      mouse.lx = mouse.x
-      mouse.ly = mouse.y
+      function drawLines() {
+        const { width, height } = boundingRef.current
+        const ctx = ctxRef.current
+        if (!ctx) return;
+        
+        ctx.clearRect(0, 0, width, height)
+        ctx.beginPath()
+        ctx.strokeStyle = lineColor
+        linesRef.current.forEach((points) => {
+          let p1 = moved(points[0], false)
+          ctx.moveTo(p1.x, p1.y)
+          points.forEach((p, idx) => {
+            const isLast = idx === points.length - 1
+            p1 = moved(p, !isLast)
+            const p2 = moved(
+              points[idx + 1] || points[points.length - 1],
+              !isLast,
+            )
+            ctx.lineTo(p1.x, p1.y)
+            if (isLast) ctx.moveTo(p2.x, p2.y)
+          })
+        })
+        ctx.stroke()
+      }
 
-      movePoints(t)
-      drawLines()
-      requestAnimationFrame(tick)
-    }
+      function tick(t: number) {
+        const mouse = mouseRef.current
 
-    function onResize() {
+        mouse.sx += (mouse.x - mouse.sx) * 0.1
+        mouse.sy += (mouse.y - mouse.sy) * 0.1
+        mouse.v = Math.hypot(mouse.x - mouse.lx, mouse.y - mouse.ly)
+        mouse.vs = Math.min(mouse.v + 0.1, 40)
+        mouse.a = Math.atan2(mouse.y - mouse.ly, mouse.x - mouse.lx)
+        mouse.lx = mouse.x
+        mouse.ly = mouse.y
+
+        movePoints(t)
+        drawLines()
+        requestAnimationFrame(tick)
+      }
+
+      function onResize() {
+        setSize()
+        setLines()
+      }
+
+      function onMouseMove(e: MouseEvent) {
+        updateMouse(e.clientX, e.clientY)
+      }
+
+      function onTouchMove(e: TouchEvent) {
+        e.preventDefault()
+        updateMouse(e.touches[0].clientX, e.touches[0].clientY)
+      }
+
+      function updateMouse(x: number, y: number) {
+        if (!container) return;
+        const rect = boundingRef.current
+        mouseRef.current.x = x - rect.left
+        mouseRef.current.y = y - rect.top
+        mouseRef.current.set = true
+      }
+
       setSize()
       setLines()
-    }
+      requestAnimationFrame(tick)
+      window.addEventListener("resize", onResize)
+      window.addEventListener("mousemove", onMouseMove)
+      window.addEventListener("touchmove", onTouchMove, { passive: false })
 
-    function onMouseMove(e: MouseEvent) {
-      updateMouse(e.clientX, e.clientY)
-    }
-
-    function onTouchMove(e: TouchEvent) {
-      e.preventDefault()
-      updateMouse(e.touches[0].clientX, e.touches[0].clientY)
-    }
-
-    function updateMouse(x: number, y: number) {
-      if (!container) return;
-      const rect = boundingRef.current
-      mouseRef.current.x = x - rect.left
-      mouseRef.current.y = y - rect.top
-      mouseRef.current.set = true
-    }
-
-    setSize()
-    setLines()
-    requestAnimationFrame(tick)
-    window.addEventListener("resize", onResize)
-    window.addEventListener("mousemove", onMouseMove)
-    window.addEventListener("touchmove", onTouchMove, { passive: false })
-
-    return () => {
-      window.removeEventListener("resize", onResize)
-      window.removeEventListener("mousemove", onMouseMove)
-      window.removeEventListener("touchmove", onTouchMove)
+      return () => {
+        window.removeEventListener("resize", onResize)
+        window.removeEventListener("mousemove", onMouseMove)
+        window.removeEventListener("touchmove", onTouchMove)
+      }
     }
   }, [
     lineColor,
