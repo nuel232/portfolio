@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     siteName: "Kelechi's Portfolio",
     images: [
       {
-        url: '/profile2.jpg',
-        width: 800,
-        height: 600,
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
         alt: 'Kelechi - Full Stack Developer',
       },
     ],
@@ -37,12 +37,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Kelechi - Full Stack Developer",
     description: "Personal portfolio of Kelechi, a full-stack developer specializing in web and blockchain technologies",
-    images: ['/profile2.jpg'],
+    images: ['/og-image.jpg'],
     creator: '@yourtwitterhandle',
   },
   icons: {
-    icon: '/profile2.jpg',
-    apple: '/profile2.jpg',
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
 };
 
