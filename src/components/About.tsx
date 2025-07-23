@@ -14,6 +14,7 @@ const skills = [
       { name: "HTML/CSS", level: 67 },
       { name: "Tailwind CSS", level: 60 },
       { name: "Responsive Design", level: 63 },
+      { name: "Flutter", level: 30 },
     ],
   },
   {
@@ -113,6 +114,11 @@ const servicesData = [
     title: "UI/UX Design",
     description: "User-friendly interfaces with focus on accessibility and user experience",
     icon: "🎨",
+  },
+  {
+    title: "Flutter App Development",
+    description: "Cross-platform mobile applications using Flutter for both Android and iOS.",
+    icon: "📱",
   }
 ];
 
@@ -134,7 +140,8 @@ const About = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white">About Me</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              A passionate developer with expertise in both web and blockchain technologies, focused on creating beautiful, functional, and secure applications.
+              A passionate developer with expertise in both web and blockchain technologies, focused on creating beautiful, functional, and secure applications.<br />
+              <span className="block mt-2">Currently, I am also learning Flutter to expand my cross-platform development skills.</span>
             </p>
           </div>
           
@@ -433,7 +440,7 @@ const About = () => {
             variants={fadeInUp}
             className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
           >
-            {servicesData.slice(0, 3).map((service, index) => (
+            {servicesData.slice(0, 4).map((service, index) => (
               <motion.div 
                 key={index} 
                 className="group bg-gray-100/50 dark:bg-gray-800/50 bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700/30 shadow-md hover:shadow-lg transition-all overflow-hidden relative"
