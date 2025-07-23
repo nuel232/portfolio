@@ -53,7 +53,7 @@ const Hero = () => {
             </h1>
             
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-md mb-8">
-              A passionate full-stack developer specializing in web and blockchain technologies, focused on building beautiful, functional, and secure applications.
+              A passionate front-end developer specializing in web and blockchain technologies, focused on building beautiful, functional, and secure applications.
             </p>
 
             <div className="flex flex-wrap gap-4">

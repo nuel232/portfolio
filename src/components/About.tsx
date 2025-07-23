@@ -101,7 +101,7 @@ const experienceData = [
 const servicesData = [
   {
     title: "Web Development",
-    description: "Full-stack web applications with modern frameworks and responsive design",
+    description: "Front-end web applications with modern frameworks and responsive design",
     icon: "🌐",
   },
   {
@@ -177,7 +177,7 @@ const About = () => {
             <div className="bg-gray-100/50 dark:bg-gray-800/50 bg-gray-100 dark:bg-gray-800 rounded-xl p-6 border border-gray-300 dark:border-gray-700/30 shadow-md">
               <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Kelechi</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                I am a passionate and skilled full-stack developer with a strong focus on blockchain technologies. 
+                I am a passionate and skilled front-end developer with a strong focus on blockchain technologies. 
                 My journey in technology started with a deep interest in how digital solutions can solve real-world problems.
               </p>
               <p className="text-gray-600 dark:text-gray-300 mb-6">

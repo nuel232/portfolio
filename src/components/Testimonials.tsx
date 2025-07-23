@@ -32,7 +32,7 @@ const initialTestimonials: Testimonial[] = [
     role: "CTO",
     company: "StartupX",
     image: "/testimonials/mike.jpg",
-    content: "Kelechi's expertise in full-stack development helped us build a robust and scalable application. His contributions were invaluable."
+    content: "Kelechi's expertise in front-end development helped us build a robust and scalable application. His contributions were invaluable."
   }
 ];
 

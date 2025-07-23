@@ -303,7 +303,7 @@ const Contact = () => {
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
                   <h4 className="font-bold mb-2">Web Development</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Full-stack development with MERN stack and modern frameworks</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Front-end development with and modern frameworks</p>
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
                   <h4 className="font-bold mb-2">Blockchain</h4>
