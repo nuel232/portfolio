@@ -91,7 +91,7 @@ const Hero = () => {
               {/* Profile image with animated border */}
               <div className="profile_animate w-full h-full overflow-hidden relative z-10">
                 <Image
-                  src="/profile.jpg"
+                  src="/sitting2.jpeg"
                   alt="Kelechi"
                   fill
                   sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, 384px"

@@ -156,7 +156,7 @@ const About = () => {
                 {/* Profile image */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Image 
-                    src="/profile.jpg" 
+                    src="/profile copy.jpg" 
                     alt="Kelechi's Profile Picture" 
                     width={280} 
                     height={280} 
