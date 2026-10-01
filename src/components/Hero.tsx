@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const Hero = () => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Used to prevent hydration mismatch
@@ -22,7 +22,7 @@ const Hero = () => {
       {/* Background waves */}
       <div className="absolute inset-0 overflow-hidden">
         <Waves
-          lineColor={theme === "dark" ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"}
+          lineColor={resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"}
           backgroundColor="transparent"
           waveSpeedX={0.02}
           waveSpeedY={0.01}
@@ -103,8 +103,8 @@ const Hero = () => {
                 <div 
                   className="absolute inset-0 profile_animate z-20 pointer-events-none" 
                   style={{
-                    border: theme === "dark" ? "9px solid rgba(255, 255, 255, 0.3)" : "9px solid rgba(0, 0, 0, 0.1)",
-                    boxShadow: theme === "dark" 
+                    border: resolvedTheme === "dark" ? "9px solid rgba(255, 255, 255, 0.3)" : "9px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: resolvedTheme === "dark" 
                       ? "0 0 20px rgba(255, 255, 255, 0.15)" 
                       : "0 0 20px rgba(0, 0, 0, 0.1)"
                   }}
