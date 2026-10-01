@@ -22,9 +22,9 @@ const Navbar = () => {
 
   // Social media links
   const socialLinks = [
-    { name: "GitHub", href: "https://github.com/your-github-username", icon: "github" },
-    { name: "LinkedIn", href: "https://linkedin.com/in/your-linkedin-username", icon: "linkedin" },
-    { name: "Twitter", href: "https://twitter.com/your-twitter-username", icon: "twitter" },
+    { name: "GitHub", href: "https://github.com/nuel232", icon: "github" },
+    { name: "LinkedIn", href: "https://www.linkedin.com/in/kelechi-nwankwoala-29b297285", icon: "linkedin" },
+    { name: "Twitter", href: "https://twitter.com/_kelechixx_", icon: "twitter" },
   ];
 
   // Used to prevent hydration mismatch

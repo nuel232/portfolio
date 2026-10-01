@@ -18,9 +18,9 @@ export default function Home() {
             "url": "https://nwankwoala.com.ng",
             "image": "https://nwankwoala.com.ng/profile2.jpg",
             "sameAs": [
-              "https://github.com/your-github-username",
-              "https://linkedin.com/in/your-linkedin-username",
-              "https://twitter.com/your-twitter-username"
+              "https://github.com/nuel232",
+              "https://www.linkedin.com/in/kelechi-nwankwoala-29b297285",
+              "https://twitter.com/_kelechixx_"
             ],
             "jobTitle": "Full Stack Developer",
             "worksFor": {

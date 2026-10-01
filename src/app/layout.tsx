@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Kelechi - Full Stack Developer",
     description: "Personal portfolio of Kelechi, a full-stack developer specializing in web and blockchain technologies",
     images: ['/og-image.jpg'],
-    creator: '@yourtwitterhandle',
+    creator: '@_kelechixx_',
   },
   icons: {
     icon: '/favicon.ico',
