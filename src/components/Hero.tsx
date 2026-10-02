@@ -31,8 +31,9 @@ const Hero = () => {
           friction={0.9}
           tension={0.01}
           maxCursorMove={120}
-          xGap={12}
-          yGap={36}
+          lineWidth={1.2}
+          xGap={14}
+          yGap={28}
         />
       </div>
 

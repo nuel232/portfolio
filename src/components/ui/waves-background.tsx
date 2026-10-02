@@ -21,6 +21,7 @@ interface WavesProps {
   friction?: number;
   tension?: number;
   maxCursorMove?: number;
+  lineWidth?: number;
   className?: string;
 }
 
@@ -144,6 +145,7 @@ class Noise {
 
 export function Waves({
   lineColor = "hsl(var(--foreground))",
+  lineWidth = 1,
   backgroundColor = "transparent",
   waveSpeedX = 0.0125,
   waveSpeedY = 0.005,
@@ -151,8 +153,8 @@ export function Waves({
   waveAmpY = 16,
   xGap = 10,
   yGap = 32,
-  friction = 0.925,
-  tension = 0.005,
+  friction = 0.82,
+  tension = 0.04,
   maxCursorMove = 100,
   className,
 }: WavesProps) {
@@ -217,31 +219,26 @@ export function Waves({
         ctx.clearRect(0, 0, width, height);
         ctx.beginPath();
         ctx.strokeStyle = lineColor;
-        linesRef.current.forEach((points: any) => {
-          let p1 = moved(points[0]);
-          ctx.moveTo(p1.x, p1.y);
-          points.forEach((p: any, idx: number) => {
-            const isLast = idx === points.length - 1;
-            p1 = moved(p);
-            const p2 = moved(points[idx + 1] || points[points.length - 1]);
-            ctx.lineTo(p1.x, p1.y);
-            if (isLast) ctx.moveTo(p2.x, p2.y);
-          });
-        });
+        ctx.lineWidth = lineWidth;
+        linesRef.current.forEach((points: any) =>
+          traceSmooth(ctx, points, false),
+        );
         ctx.stroke();
       };
+      let raf = 0;
       const tick = (t: number) => {
         movePoints(t);
         drawLines();
-        requestAnimationFrame(tick);
+        raf = requestAnimationFrame(tick);
       };
       const onResize = () => {
         setSize(container, canvas, boundingRef);
         setLines(boundingRef, linesRef, xGap, yGap);
       };
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
       window.addEventListener("resize", onResize);
       return () => {
+        cancelAnimationFrame(raf);
         window.removeEventListener("resize", onResize);
       };
     } else {
@@ -272,8 +269,8 @@ export function Waves({
             if (dist < l) {
               const s = 1 - dist / l;
               const f = Math.cos(dist * 0.001) * s;
-              p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00065;
-              p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00065;
+              p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.0012;
+              p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.0012;
             }
 
             p.cursor.vx += (0 - p.cursor.x) * tension;
@@ -301,26 +298,17 @@ export function Waves({
         ctx.clearRect(0, 0, width, height);
         ctx.beginPath();
         ctx.strokeStyle = lineColor;
-        linesRef.current.forEach((points: any) => {
-          let p1 = moved(points[0], false);
-          ctx.moveTo(p1.x, p1.y);
-          points.forEach((p: any, idx: number) => {
-            const isLast = idx === points.length - 1;
-            p1 = moved(p, !isLast);
-            const p2 = moved(
-              points[idx + 1] || points[points.length - 1],
-              !isLast,
-            );
-            ctx.lineTo(p1.x, p1.y);
-            if (isLast) ctx.moveTo(p2.x, p2.y);
-          });
-        });
+        ctx.lineWidth = lineWidth;
+        linesRef.current.forEach((points: any) =>
+          traceSmooth(ctx, points, true),
+        );
         ctx.stroke();
       };
+      let raf = 0;
       const tick = (t: number) => {
         const mouse = mouseRef.current;
-        mouse.sx += (mouse.x - mouse.sx) * 0.1;
-        mouse.sy += (mouse.y - mouse.sy) * 0.1;
+        mouse.sx += (mouse.x - mouse.sx) * 0.2;
+        mouse.sy += (mouse.y - mouse.sy) * 0.2;
         mouse.v = Math.hypot(mouse.x - mouse.lx, mouse.y - mouse.ly);
         mouse.vs = Math.min(mouse.v + 0.1, 40);
         mouse.a = Math.atan2(mouse.y - mouse.ly, mouse.x - mouse.lx);
@@ -328,7 +316,7 @@ export function Waves({
         mouse.ly = mouse.y;
         movePoints(t);
         drawLines();
-        requestAnimationFrame(tick);
+        raf = requestAnimationFrame(tick);
       };
       const onResize = () => {
         setSize(container, canvas, boundingRef);
@@ -348,11 +336,12 @@ export function Waves({
         mouseRef.current.y = y - rect.top;
         mouseRef.current.set = true;
       };
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
       window.addEventListener("resize", onResize);
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("touchmove", onTouchMove, { passive: false });
       return () => {
+        cancelAnimationFrame(raf);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("touchmove", onTouchMove);
@@ -405,8 +394,10 @@ export function Waves({
 function setSize(container: HTMLDivElement | null, canvas: HTMLCanvasElement | null, boundingRef: any) {
   if (!container || !canvas) return;
   boundingRef.current = container.getBoundingClientRect();
-  canvas.width = boundingRef.current.width;
-  canvas.height = boundingRef.current.height;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(boundingRef.current.width * dpr);
+  canvas.height = Math.round(boundingRef.current.height * dpr);
+  canvas.getContext("2d")?.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 function setLines(boundingRef: any, linesRef: any, xGap: number, yGap: number) {
@@ -430,6 +421,27 @@ function setLines(boundingRef: any, linesRef: any, xGap: number, yGap: number) {
     }
     linesRef.current.push(pts);
   }
+}
+
+function traceSmooth(
+  ctx: CanvasRenderingContext2D,
+  points: any[],
+  withCursor: boolean,
+) {
+  const n = points.length;
+  if (n < 3) return;
+  const px = (i: number) =>
+    points[i].x + points[i].wave.x +
+    (withCursor && i > 0 && i < n - 1 ? points[i].cursor.x : 0);
+  const py = (i: number) =>
+    points[i].y + points[i].wave.y +
+    (withCursor && i > 0 && i < n - 1 ? points[i].cursor.y : 0);
+  ctx.moveTo(px(0), py(0));
+  for (let i = 1; i < n - 1; i++) {
+    const cx = px(i), cy = py(i);
+    ctx.quadraticCurveTo(cx, cy, (cx + px(i + 1)) / 2, (cy + py(i + 1)) / 2);
+  }
+  ctx.lineTo(px(n - 1), py(n - 1));
 }
 
 function moved(point: any, withCursor: boolean = true) {
