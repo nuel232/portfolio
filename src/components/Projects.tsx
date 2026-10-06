@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { GitBranch, ExternalLink, ShoppingBag, Shield, GraduationCap, Bot, MessageSquare, Activity, TrendingUp, Wallet, type LucideIcon } from "lucide-react";
 
 interface Project {
@@ -20,7 +20,9 @@ interface Project {
   demo: string | null;
   type: "mobile" | "web";
   screenshots: string[]; // placeholder gradient colors
-  images?: string[]; // real screenshots, e.g. "/projects/blockdegrees-1.png" (in /public)
+  images?: string[]; // screenshots in /public, e.g. "/projects/blockdegrees-1.png" (web: use a TALL full-page shot, it auto-scrolls)
+  video?: string; // mobile: screen recording in /public, e.g. "/projects/ecommerce.mp4"
+  embed?: boolean; // web: show the live site inside the browser frame (needs the site to allow iframes)
   accent: string;
   icon: LucideIcon;
 }
@@ -49,7 +51,7 @@ const projects: Project[] = [
     index: "02",
     category: "WEB3 APP",
     year: "2025",
-    status: "Live on Sepolia",
+    status: "Live",
     live: true,
     statusColor: "#f59e0b",
     headline: "Drug supply chain.\nOn-chain.\nTamper-proof.",
@@ -161,15 +163,59 @@ const projects: Project[] = [
   },
 ];
 
+// Gentle floating motion for the device frames
+const Float = ({ children }: { children: React.ReactNode }) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className="w-full flex items-center justify-center"
+      animate={reduce ? undefined : { y: [0, -12, 0], rotate: [0, 0.8, 0] }}
+      transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Live site shown inside the browser frame, scaled down from a 1280px-wide viewport
+const LiveEmbed = ({ url }: { url: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.4);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setScale(el.clientWidth / 1280));
+    ro.observe(el);
+    setScale(el.clientWidth / 1280);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className="absolute inset-0 overflow-hidden">
+      <iframe
+        src={url}
+        title="Live preview"
+        loading="lazy"
+        tabIndex={-1}
+        className="border-0 pointer-events-none origin-top-left"
+        style={{ width: 1280, height: 800, transform: `scale(${scale})` }}
+      />
+    </div>
+  );
+};
+
 // Minimal SVG iPhone frame
 const PhoneFrame = ({
   accent,
   screenshots,
   icon: Icon,
+  image,
+  video,
 }: {
   accent: string;
   screenshots: string[];
   icon: LucideIcon;
+  image?: string;
+  video?: string;
 }) => (
   <div className="relative flex items-center justify-center w-full h-full select-none">
     {/* Phone SVG shell */}
@@ -280,6 +326,18 @@ const PhoneFrame = ({
           </div>
         </div>
 
+        {/* Real app media (video or screenshot) covers the placeholder UI */}
+        {(video || image) && (
+          <div className="absolute inset-x-0 top-10 bottom-[34px] bg-black">
+            {video ? (
+              <video src={video} autoPlay muted loop playsInline className="w-full h-full object-cover object-top" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={image} alt="" className="w-full h-full object-cover object-top" />
+            )}
+          </div>
+        )}
+
         {/* Home indicator */}
         <div className="h-[34px] bg-black flex items-center justify-center">
           <div className="w-28 h-1 rounded-full bg-white opacity-30" />
@@ -296,12 +354,14 @@ const BrowserFrame = ({
   icon: Icon,
   url,
   image,
+  embed,
 }: {
   accent: string;
   screenshots: string[];
   icon: LucideIcon;
   url: string | null;
   image?: string;
+  embed?: boolean;
 }) => {
   const host = url ? new URL(url).host : "localhost:3000";
   return (
@@ -325,8 +385,16 @@ const BrowserFrame = ({
         {/* Viewport */}
         <div className="relative aspect-[16/10] overflow-hidden">
           {image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={image} alt="" className="w-full h-full object-cover object-top" />
+            // Tall screenshot that slowly scrolls top to bottom and back
+            <motion.div
+              className="w-full h-full"
+              style={{ backgroundImage: `url(${image})`, backgroundSize: "100% auto", backgroundRepeat: "no-repeat" }}
+              initial={{ backgroundPositionY: "0%" }}
+              animate={{ backgroundPositionY: ["0%", "100%"] }}
+              transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "easeInOut", repeatDelay: 1.5 }}
+            />
+          ) : embed && url ? (
+            <LiveEmbed url={url} />
           ) : (
             <div
               className="w-full h-full flex flex-col"
@@ -548,21 +616,26 @@ export default function Projects() {
               transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
               className="w-full flex items-center justify-center"
             >
-              {project.type === "web" ? (
-                <BrowserFrame
-                  accent={project.accent}
-                  screenshots={project.screenshots}
-                  icon={project.icon}
-                  url={project.demo}
-                  image={project.images?.[0]}
-                />
-              ) : (
-                <PhoneFrame
-                  accent={project.accent}
-                  screenshots={project.screenshots}
-                  icon={project.icon}
-                />
-              )}
+              <Float>
+                {project.type === "web" ? (
+                  <BrowserFrame
+                    accent={project.accent}
+                    screenshots={project.screenshots}
+                    icon={project.icon}
+                    url={project.demo}
+                    image={project.images?.[0]}
+                    embed={project.embed}
+                  />
+                ) : (
+                  <PhoneFrame
+                    accent={project.accent}
+                    screenshots={project.screenshots}
+                    icon={project.icon}
+                    image={project.images?.[0]}
+                    video={project.video}
+                  />
+                )}
+              </Float>
             </motion.div>
           </AnimatePresence>
         </div>
