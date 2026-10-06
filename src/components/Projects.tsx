@@ -1,86 +1,517 @@
 "use client";
 
-import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import {
-  CodeIcon,
-  GlobeIcon,
-  LaptopIcon,
-  RocketIcon,
-  StackIcon,
-} from "@radix-ui/react-icons";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { GitBranch, ExternalLink, Play } from "lucide-react";
 
 const projects = [
   {
-    Icon: CodeIcon,
-    name: "Decentralized Voting System",
-    description:
-      "A secure and transparent voting platform built on Ethereum blockchain that enables tamper-proof voting records, remote voting, and maintains voter anonymity.",
-    href: "#",
-    cta: "View Project",
-    background: <div className="absolute -right-20 -top-20 opacity-60"></div>,
-    className: "lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-2",
+    index: "01",
+    total: "07",
+    category: "MOBILE APP",
+    year: "2025 — now",
+    status: "In Development",
+    statusColor: "#22c55e",
+    headline: "Shop smarter.\nCheckout faster.\nBuilt for Nigeria.",
+    name: "Modern E-Commerce App",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["FLUTTER", "FIREBASE", "PROVIDER", "PAYSTACK"],
+    github: "https://github.com/nuel232/modern-ecommerce-app",
+    demo: null,
+    screenshots: ["#e2e8f0", "#cbd5e1", "#94a3b8"],
+    accent: "#6366f1",
+    bg: "from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30",
+    emoji: "🛍️",
   },
   {
-    Icon: RocketIcon,
-    name: "Blockchain Certificate Authentication",
-    description:
-      "A decentralized application for storing and verifying academic certificates on the Ethereum blockchain with smart contracts and verification functionality.",
-    href: "#",
-    cta: "Explore Project",
-    background: <div className="absolute -right-20 -top-20 opacity-60"></div>,
-    className: "lg:col-start-2 lg:col-end-3 lg:row-start-1 lg:row-end-2",
+    index: "02",
+    total: "07",
+    category: "WEB3 APP",
+    year: "2025",
+    status: "Live on Sepolia",
+    statusColor: "#f59e0b",
+    headline: "Drug supply chain.\nOn-chain.\nTamper-proof.",
+    name: "SecureMedChain",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["REACT", "SOLIDITY", "ETHERS.JS", "METAMASK"],
+    github: "https://github.com/nuel232/secure-med-chain",
+    demo: null,
+    screenshots: ["#d1fae5", "#a7f3d0", "#6ee7b7"],
+    accent: "#10b981",
+    bg: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30",
+    emoji: "⛓️",
   },
   {
-    Icon: StackIcon,
-    name: "Student Exeat Permission System",
-    description:
-      "A comprehensive MERN stack web application for Veritas University to manage student exeat permissions with a multi-stage approval workflow.",
-    href: "#",
-    cta: "See Project",
-    background: <div className="absolute -right-20 -top-20 opacity-60"></div>,
-    className: "lg:col-start-2 lg:col-end-3 lg:row-start-2 lg:row-end-4",
+    index: "03",
+    total: "07",
+    category: "BLOCKCHAIN",
+    year: "Feb — Jun 2025",
+    status: "Lead Developer",
+    statusColor: "#8b5cf6",
+    headline: "Fake degrees.\nMeet the\nblockchain.",
+    name: "BlockDegrees",
+    role: "Lead Developer",
+    company: "BlockDegrees",
+    stack: ["HARDHAT", "SOLIDITY", "NEO4J", "NODE.JS"],
+    github: "https://github.com/nuel232/blockchain-project",
+    demo: null,
+    screenshots: ["#ede9fe", "#ddd6fe", "#c4b5fd"],
+    accent: "#8b5cf6",
+    bg: "from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30",
+    emoji: "🎓",
   },
   {
-    Icon: LaptopIcon,
-    name: "Gemini AI Integration",
-    description:
-      "A web application that integrates Google's Gemini AI model to provide conversational AI capabilities with a React-based UI.",
-    href: "#",
-    cta: "View Demo",
-    background: <div className="absolute -right-20 -top-20 opacity-60"></div>,
-    className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
+    index: "04",
+    total: "07",
+    category: "AI APP",
+    year: "2024",
+    status: "Live",
+    statusColor: "#ef4444",
+    headline: "Your AI coach\nknows every\nplay.",
+    name: "Basketball Coaching Assistant",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["REACT", "EXPRESS", "GEMINI AI", "NODE.JS"],
+    github: "https://github.com/nuel232/Interactive-Basketball-Coaching-Assistant",
+    demo: null,
+    screenshots: ["#fef3c7", "#fde68a", "#fcd34d"],
+    accent: "#f59e0b",
+    bg: "from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30",
+    emoji: "🏀",
   },
   {
-    Icon: GlobeIcon,
-    name: "Django Web Applications",
-    description:
-      "Multiple Django web applications including e-commerce platforms, weather applications, and API implementations using Django REST framework.",
-    href: "#",
-    cta: "See Portfolio",
-    background: <div className="absolute -right-20 -top-20 opacity-60"></div>,
-    className: "lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-4",
+    index: "05",
+    total: "07",
+    category: "MOBILE APP",
+    year: "2024",
+    status: "Completed",
+    statusColor: "#64748b",
+    headline: "Real-time chat.\nZero friction.\nFirebase fast.",
+    name: "Modern Chat App",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["FLUTTER", "FIREBASE", "PROVIDER", "FIRESTORE"],
+    github: "https://github.com/nuel232/modern-Chat-App",
+    demo: null,
+    screenshots: ["#dbeafe", "#bfdbfe", "#93c5fd"],
+    accent: "#3b82f6",
+    bg: "from-blue-50 to-sky-50 dark:from-blue-950/30 dark:to-sky-950/30",
+    emoji: "💬",
+  },
+  {
+    index: "06",
+    total: "07",
+    category: "MOBILE APP",
+    year: "2024",
+    status: "Completed",
+    statusColor: "#64748b",
+    headline: "NBA stats.\nEvery player.\nRight now.",
+    name: "NBA Stats App",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["FLUTTER", "REST API", "PROVIDER", "DART"],
+    github: "https://github.com/nuel232/NBA-App-",
+    demo: null,
+    screenshots: ["#fee2e2", "#fecaca", "#fca5a5"],
+    accent: "#ef4444",
+    bg: "from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30",
+    emoji: "🏀",
+  },
+  {
+    index: "07",
+    total: "07",
+    category: "MOBILE APP",
+    year: "2024",
+    status: "Completed",
+    statusColor: "#64748b",
+    headline: "Track every naira.\nSee where\nit goes.",
+    name: "Expense Tracker",
+    role: "Solo Developer",
+    company: "Personal Project",
+    stack: ["FLUTTER", "HIVE", "FL_CHART", "PROVIDER"],
+    github: "https://github.com/nuel232/Expense-tracker",
+    demo: null,
+    screenshots: ["#dcfce7", "#bbf7d0", "#86efac"],
+    accent: "#22c55e",
+    bg: "from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30",
+    emoji: "💰",
   },
 ];
 
-const Projects = () => {
-  return (
-    <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            A selection of my recent work, showcasing web development, blockchain and front-end skills.
-          </p>
+// Minimal SVG iPhone frame
+const PhoneFrame = ({
+  accent,
+  screenshots,
+  headline,
+  emoji,
+}: {
+  accent: string;
+  screenshots: string[];
+  headline: string;
+  emoji: string;
+}) => (
+  <div className="relative flex items-center justify-center w-full h-full select-none">
+    {/* Decorative camera metadata */}
+    <div className="absolute top-4 right-0 text-[10px] font-mono tracking-widest text-gray-400 dark:text-gray-600 hidden lg:flex flex-col items-end gap-1">
+      <div className="flex items-center gap-1">
+        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
+        <span>[ 26mm · f/1.8 · 1/200s ]</span>
+        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
+      </div>
+    </div>
+
+    {/* Phone SVG shell */}
+    <div className="relative" style={{ width: 260, height: 530 }}>
+      {/* Outer frame */}
+      <div
+        className="absolute inset-0 rounded-[44px] shadow-2xl"
+        style={{
+          background: "linear-gradient(145deg, #2d2d2d, #1a1a1a)",
+          boxShadow: `0 30px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.05)`,
+        }}
+      />
+      {/* Side buttons */}
+      <div className="absolute -left-[3px] top-[100px] w-[3px] h-8 rounded-l-sm bg-[#333]" />
+      <div className="absolute -left-[3px] top-[148px] w-[3px] h-12 rounded-l-sm bg-[#333]" />
+      <div className="absolute -left-[3px] top-[210px] w-[3px] h-12 rounded-l-sm bg-[#333]" />
+      <div className="absolute -right-[3px] top-[140px] w-[3px] h-16 rounded-r-sm bg-[#333]" />
+      {/* Screen bezel */}
+      <div className="absolute inset-[6px] rounded-[38px] overflow-hidden bg-black">
+        {/* Status bar */}
+        <div className="relative h-10 bg-black flex items-end justify-between px-6 pb-1">
+          <span className="text-white text-[10px] font-semibold">9:41</span>
+          {/* Dynamic island */}
+          <div
+            className="absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-[26px] rounded-full"
+            style={{ background: "#000" }}
+          />
+          <div className="flex items-center gap-1">
+            <svg width="12" height="10" viewBox="0 0 12 10" fill="white">
+              <rect x="0" y="3" width="2" height="7" rx="1" />
+              <rect x="3" y="2" width="2" height="8" rx="1" />
+              <rect x="6" y="1" width="2" height="9" rx="1" />
+              <rect x="9" y="0" width="2" height="10" rx="1" />
+            </svg>
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="white">
+              <path d="M7 2.5C9.5 2.5 11.7 3.7 13 5.6L14 4.4C12.4 2.1 9.9 0.7 7 0.7C4.1 0.7 1.6 2.1 0 4.4L1 5.6C2.3 3.7 4.5 2.5 7 2.5Z" />
+              <path d="M7 5.5C8.5 5.5 9.8 6.2 10.7 7.3L11.7 6C10.4 4.5 8.8 3.5 7 3.5C5.2 3.5 3.6 4.5 2.3 6L3.3 7.3C4.2 6.2 5.5 5.5 7 5.5Z" />
+              <circle cx="7" cy="9" r="1.2" />
+            </svg>
+            <svg width="22" height="10" viewBox="0 0 22 10" fill="none">
+              <rect x="0.5" y="0.5" width="18" height="9" rx="2.5" stroke="white" strokeOpacity="0.35" />
+              <rect x="1.5" y="1.5" width="14" height="7" rx="1.5" fill="white" />
+              <path d="M20 3.5V6.5C20.8 6.2 21.4 5.5 21.4 4.9C21.4 4.3 20.8 3.8 20 3.5Z" fill="white" fillOpacity="0.4" />
+            </svg>
+          </div>
         </div>
-        
-        <BentoGrid className="lg:grid-rows-3">
-          {projects.map((project) => (
-            <BentoCard key={project.name} {...project} />
+
+        {/* App content area */}
+        <div
+          className="flex-1 flex flex-col"
+          style={{
+            background: `linear-gradient(160deg, ${screenshots[0]}ee, ${screenshots[1]}cc, ${screenshots[2]}aa)`,
+            height: "calc(100% - 40px - 34px)",
+          }}
+        >
+          {/* App bar */}
+          <div className="px-5 py-3 flex items-center justify-between" style={{ background: accent + "22" }}>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-base" style={{ background: accent + "33" }}>
+                {emoji}
+              </div>
+              <div className="h-2.5 w-20 rounded-full opacity-40" style={{ background: accent }} />
+            </div>
+            <div className="w-7 h-7 rounded-full" style={{ background: accent + "33" }} />
+          </div>
+
+          {/* Mock content blocks */}
+          <div className="flex-1 p-4 flex flex-col gap-3">
+            {/* Big card */}
+            <div className="rounded-2xl p-4 flex flex-col gap-2" style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)" }}>
+              <div className="h-2 w-3/4 rounded-full opacity-50" style={{ background: accent }} />
+              <div className="h-16 rounded-xl opacity-20" style={{ background: accent }} />
+              <div className="flex gap-2">
+                <div className="h-2 w-12 rounded-full opacity-30" style={{ background: accent }} />
+                <div className="h-2 w-16 rounded-full opacity-20" style={{ background: accent }} />
+              </div>
+            </div>
+
+            {/* Two smaller cards */}
+            <div className="grid grid-cols-2 gap-2">
+              {[0, 1].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-3 flex flex-col gap-1.5"
+                  style={{ background: "rgba(255,255,255,0.45)", backdropFilter: "blur(8px)" }}
+                >
+                  <div className="w-6 h-6 rounded-lg opacity-40" style={{ background: accent }} />
+                  <div className="h-1.5 w-full rounded-full opacity-30" style={{ background: accent }} />
+                  <div className="h-1.5 w-2/3 rounded-full opacity-20" style={{ background: accent }} />
+                </div>
+              ))}
+            </div>
+
+            {/* List items */}
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="rounded-xl px-3 py-2 flex items-center gap-3"
+                style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)" }}
+              >
+                <div className="w-8 h-8 rounded-lg flex-shrink-0 opacity-30" style={{ background: accent }} />
+                <div className="flex flex-col gap-1 flex-1">
+                  <div className="h-1.5 rounded-full opacity-40" style={{ background: accent, width: `${60 + i * 15}%` }} />
+                  <div className="h-1.5 rounded-full opacity-20" style={{ background: accent, width: `${40 + i * 10}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Home indicator */}
+        <div className="h-[34px] bg-black flex items-center justify-center">
+          <div className="w-28 h-1 rounded-full bg-white opacity-30" />
+        </div>
+      </div>
+
+      {/* Bottom counter */}
+      <div className="absolute -bottom-8 right-0 flex items-center gap-1 text-[10px] font-mono tracking-widest text-gray-400 dark:text-gray-600">
+        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
+        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
+      </div>
+    </div>
+  </div>
+);
+
+export default function Projects() {
+  const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const project = projects[active];
+
+  const go = (idx: number) => {
+    setDirection(idx > active ? 1 : -1);
+    setActive(idx);
+  };
+
+  const variants = {
+    enter: (d: number) => ({ opacity: 0, y: d > 0 ? 40 : -40 }),
+    center: { opacity: 1, y: 0 },
+    exit: (d: number) => ({ opacity: 0, y: d > 0 ? -40 : 40 }),
+  };
+
+  return (
+    <section
+      id="projects"
+      className="relative min-h-screen flex flex-col overflow-hidden bg-background"
+    >
+      {/* Section label */}
+      <div className="container mx-auto px-6 pt-16 pb-4">
+        <p className="text-xs font-mono tracking-[0.25em] text-muted-foreground uppercase">
+          Selected Work · Through the Lens
+        </p>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 container mx-auto px-6 flex flex-col lg:flex-row items-center gap-10 lg:gap-0 pb-10">
+        {/* LEFT */}
+        <div className="flex-1 flex flex-col justify-center lg:pr-10 w-full">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={active}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-col gap-5"
+            >
+              {/* Meta row */}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-mono tracking-widest text-muted-foreground">
+                <span style={{ color: project.accent }}>
+                  {project.index} / {project.total}
+                </span>
+                <span>·</span>
+                <span>{project.category}</span>
+                <span>·</span>
+                <span>{project.year}</span>
+                <span
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-[10px]"
+                  style={{ background: project.statusColor }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-white opacity-80 animate-pulse" />
+                  {project.status}
+                </span>
+              </div>
+
+              {/* Headline */}
+              <h2
+                className="text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] tracking-tight"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {project.headline}
+              </h2>
+
+              {/* App identity */}
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center text-2xl shadow-md flex-shrink-0"
+                  style={{ background: project.accent + "22", border: `1px solid ${project.accent}33` }}
+                >
+                  {project.emoji}
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{project.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {project.role} · {project.company}
+                  </p>
+                </div>
+              </div>
+
+              {/* Stack tags */}
+              <div className="flex flex-wrap gap-2">
+                {project.stack.map((s) => (
+                  <span
+                    key={s}
+                    className="text-[10px] font-mono tracking-widest px-2.5 py-1 rounded border"
+                    style={{
+                      color: project.accent,
+                      borderColor: project.accent + "44",
+                      background: project.accent + "0d",
+                    }}
+                  >
+                    [ {s} ]
+                  </span>
+                ))}
+              </div>
+
+              {/* Screenshot thumbnails */}
+              <div className="flex gap-2">
+                {project.screenshots.map((c, i) => (
+                  <div
+                    key={i}
+                    className="relative w-[70px] h-[112px] rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-white/10"
+                    style={{ background: `linear-gradient(160deg, ${c}cc, ${c}88)` }}
+                  >
+                    <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-white/60">
+                      0{i + 1}
+                    </span>
+                    {i === 0 && (
+                      <div
+                        className="absolute inset-0 rounded-xl"
+                        style={{ outline: `2px solid ${project.accent}`, outlineOffset: "2px" }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border border-foreground/20 hover:bg-foreground/5 transition-colors"
+                >
+                  <GitBranch size={14} />
+                  View Code
+                </a>
+                {project.demo && (
+                  <a
+                    href={project.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-white transition-colors"
+                    style={{ background: project.accent }}
+                  >
+                    <ExternalLink size={14} />
+                    Live Demo
+                  </a>
+                )}
+                <button className="w-9 h-9 rounded-full border border-foreground/20 flex items-center justify-center hover:bg-foreground/5 transition-colors">
+                  <Play size={13} />
+                </button>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* RIGHT — phone */}
+        <div className="flex-1 flex items-center justify-center lg:pl-10 w-full min-h-[560px]">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={active}
+              custom={direction}
+              variants={{
+                enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60, rotate: d > 0 ? 4 : -4 }),
+                center: { opacity: 1, x: 0, rotate: 0 },
+                exit: (d: number) => ({ opacity: 0, x: d > 0 ? -60 : 60, rotate: d > 0 ? -4 : 4 }),
+              }}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+              className="w-full flex items-center justify-center"
+            >
+              <PhoneFrame
+                accent={project.accent}
+                screenshots={project.screenshots}
+                headline={project.headline}
+                emoji={project.emoji}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Bottom project switcher */}
+      <div className="container mx-auto px-6 pb-10">
+        <div className="flex items-center gap-1 overflow-x-auto pb-2 scrollbar-hide">
+          {projects.map((p, i) => (
+            <button
+              key={i}
+              onClick={() => go(i)}
+              className="flex-shrink-0 flex flex-col items-center gap-1.5 group"
+            >
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all duration-300"
+                style={{
+                  background: i === active ? p.accent + "22" : "transparent",
+                  border: `1.5px solid ${i === active ? p.accent : "transparent"}`,
+                  transform: i === active ? "scale(1.1)" : "scale(0.9)",
+                  opacity: i === active ? 1 : 0.45,
+                }}
+              >
+                {p.emoji}
+              </div>
+              {i === active && (
+                <motion.div
+                  layoutId="dot"
+                  className="w-1 h-1 rounded-full"
+                  style={{ background: p.accent }}
+                />
+              )}
+            </button>
           ))}
-        </BentoGrid>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mt-3 h-px w-full bg-border relative overflow-hidden">
+          <motion.div
+            className="absolute top-0 left-0 h-full"
+            style={{ background: project.accent }}
+            animate={{ width: `${((active + 1) / projects.length) * 100}%` }}
+            transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+          />
+        </div>
+        <div className="mt-2 flex justify-between text-[10px] font-mono text-muted-foreground tracking-widest">
+          <span>SELECTED WORK</span>
+          <span>{project.index} / {project.total}</span>
+        </div>
       </div>
     </section>
   );
-};
-
-export default Projects; 
+}
