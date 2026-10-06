@@ -1,16 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GitBranch, ExternalLink, ShoppingBag, Shield, GraduationCap, Bot, MessageSquare, Activity, TrendingUp, Wallet, type LucideIcon } from "lucide-react";
 
-const projects = [
+interface Project {
+  index: string;
+  category: string;
+  year: string;
+  status: string;
+  statusColor: string;
+  live: boolean;
+  headline: string;
+  name: string;
+  role: string;
+  company: string;
+  stack: string[];
+  github: string;
+  demo: string | null;
+  type: "mobile" | "web";
+  screenshots: string[]; // placeholder gradient colors
+  images?: string[]; // real screenshots, e.g. "/projects/blockdegrees-1.png" (in /public)
+  accent: string;
+  icon: LucideIcon;
+}
+
+const projects: Project[] = [
   {
     index: "01",
-    total: "07",
     category: "MOBILE APP",
     year: "2025 — now",
     status: "In Development",
+    live: true,
     statusColor: "#22c55e",
     headline: "Shop smarter.\nCheckout faster.\nBuilt for Nigeria.",
     name: "Modern E-Commerce App",
@@ -19,17 +40,17 @@ const projects = [
     stack: ["FLUTTER", "FIREBASE", "PROVIDER", "PAYSTACK"],
     github: "https://github.com/nuel232/modern-ecommerce-app",
     demo: null,
+    type: "mobile",
     screenshots: ["#e2e8f0", "#cbd5e1", "#94a3b8"],
     accent: "#6366f1",
-    bg: "from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30",
     icon: ShoppingBag,
   },
   {
     index: "02",
-    total: "07",
     category: "WEB3 APP",
     year: "2025",
     status: "Live on Sepolia",
+    live: true,
     statusColor: "#f59e0b",
     headline: "Drug supply chain.\nOn-chain.\nTamper-proof.",
     name: "SecureMedChain",
@@ -37,18 +58,18 @@ const projects = [
     company: "Personal Project",
     stack: ["REACT", "SOLIDITY", "ETHERS.JS", "METAMASK"],
     github: "https://github.com/nuel232/secure-med-chain",
-    demo: null,
+    demo: "https://secure-med-chain.vercel.app/",
+    type: "web",
     screenshots: ["#d1fae5", "#a7f3d0", "#6ee7b7"],
     accent: "#10b981",
-    bg: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30",
     icon: Shield,
   },
   {
     index: "03",
-    total: "07",
     category: "BLOCKCHAIN",
     year: "Feb — Jun 2025",
-    status: "Lead Developer",
+    status: "Completed",
+    live: false,
     statusColor: "#8b5cf6",
     headline: "Fake degrees.\nMeet the\nblockchain.",
     name: "BlockDegrees",
@@ -56,18 +77,18 @@ const projects = [
     company: "BlockDegrees",
     stack: ["HARDHAT", "SOLIDITY", "NEO4J", "NODE.JS"],
     github: "https://github.com/nuel232/BlockDegrees",
-    demo: null,
+    demo: "https://block-degrees-gilt.vercel.app/",
+    type: "web",
     screenshots: ["#ede9fe", "#ddd6fe", "#c4b5fd"],
     accent: "#8b5cf6",
-    bg: "from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30",
     icon: GraduationCap,
   },
   {
     index: "04",
-    total: "07",
     category: "AI APP",
     year: "2024",
     status: "Live",
+    live: true,
     statusColor: "#ef4444",
     headline: "Your AI coach\nknows every\nplay.",
     name: "Basketball Coaching Assistant",
@@ -75,18 +96,18 @@ const projects = [
     company: "Personal Project",
     stack: ["REACT", "EXPRESS", "GEMINI AI", "NODE.JS"],
     github: "https://github.com/nuel232/coach-carter",
-    demo: null,
+    demo: "https://coach-carter-weld.vercel.app/",
+    type: "web",
     screenshots: ["#fef3c7", "#fde68a", "#fcd34d"],
     accent: "#f59e0b",
-    bg: "from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30",
     icon: Bot,
   },
   {
     index: "05",
-    total: "07",
     category: "MOBILE APP",
     year: "2024",
     status: "Completed",
+    live: false,
     statusColor: "#64748b",
     headline: "Real-time chat.\nZero friction.\nFirebase fast.",
     name: "Modern Chat App",
@@ -95,17 +116,17 @@ const projects = [
     stack: ["FLUTTER", "FIREBASE", "PROVIDER", "FIRESTORE"],
     github: "https://github.com/nuel232/modern-Chat-App",
     demo: null,
+    type: "mobile",
     screenshots: ["#dbeafe", "#bfdbfe", "#93c5fd"],
     accent: "#3b82f6",
-    bg: "from-blue-50 to-sky-50 dark:from-blue-950/30 dark:to-sky-950/30",
     icon: MessageSquare,
   },
   {
     index: "06",
-    total: "07",
     category: "MOBILE APP",
     year: "2024",
     status: "Completed",
+    live: false,
     statusColor: "#64748b",
     headline: "NBA stats.\nEvery player.\nRight now.",
     name: "NBA Stats App",
@@ -114,17 +135,17 @@ const projects = [
     stack: ["FLUTTER", "REST API", "PROVIDER", "DART"],
     github: "https://github.com/nuel232/NBA-App-",
     demo: null,
+    type: "mobile",
     screenshots: ["#fee2e2", "#fecaca", "#fca5a5"],
     accent: "#ef4444",
-    bg: "from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30",
     icon: Activity,
   },
   {
     index: "07",
-    total: "07",
     category: "MOBILE APP",
     year: "2024",
     status: "Completed",
+    live: false,
     statusColor: "#64748b",
     headline: "Track every naira.\nSee where\nit goes.",
     name: "Expense Tracker",
@@ -133,9 +154,9 @@ const projects = [
     stack: ["FLUTTER", "HIVE", "FL_CHART", "PROVIDER"],
     github: "https://github.com/nuel232/Expense-tracker",
     demo: null,
+    type: "mobile",
     screenshots: ["#dcfce7", "#bbf7d0", "#86efac"],
     accent: "#22c55e",
-    bg: "from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30",
     icon: Wallet,
   },
 ];
@@ -264,25 +285,105 @@ const PhoneFrame = ({
           <div className="w-28 h-1 rounded-full bg-white opacity-30" />
         </div>
       </div>
-
-      {/* Bottom counter */}
-      <div className="absolute -bottom-8 right-0 flex items-center gap-1 text-[10px] font-mono tracking-widest text-gray-400 dark:text-gray-600">
-        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
-        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
-      </div>
     </div>
   </div>
 );
+
+// Minimal browser window frame for web projects
+const BrowserFrame = ({
+  accent,
+  screenshots,
+  icon: Icon,
+  url,
+  image,
+}: {
+  accent: string;
+  screenshots: string[];
+  icon: LucideIcon;
+  url: string | null;
+  image?: string;
+}) => {
+  const host = url ? new URL(url).host : "localhost:3000";
+  return (
+    <div className="w-full max-w-[560px] select-none">
+      <div
+        className="rounded-xl overflow-hidden border border-foreground/10 bg-background"
+        style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05)" }}
+      >
+        {/* Toolbar */}
+        <div className="flex items-center gap-3 px-3.5 py-2.5 bg-foreground/[0.04] border-b border-foreground/10">
+          <div className="flex gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          </div>
+          <div className="flex-1 mx-2 px-3 py-1 rounded-md bg-foreground/[0.06] text-[11px] font-mono text-muted-foreground truncate text-center">
+            {host}
+          </div>
+        </div>
+
+        {/* Viewport */}
+        <div className="relative aspect-[16/10] overflow-hidden">
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={image} alt="" className="w-full h-full object-cover object-top" />
+          ) : (
+            <div
+              className="w-full h-full flex flex-col"
+              style={{ background: `linear-gradient(160deg, ${screenshots[0]}ee, ${screenshots[1]}cc, ${screenshots[2]}aa)` }}
+            >
+              <div className="px-5 py-3 flex items-center justify-between" style={{ background: accent + "22" }}>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: accent + "33" }}>
+                    <Icon size={13} style={{ color: accent }} />
+                  </div>
+                  <div className="h-2 w-16 rounded-full opacity-40" style={{ background: accent }} />
+                </div>
+                <div className="flex gap-3">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="h-1.5 w-10 rounded-full opacity-30" style={{ background: accent }} />
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1 p-6 flex flex-col gap-4">
+                <div className="h-3 w-1/2 rounded-full opacity-50" style={{ background: accent }} />
+                <div className="h-2 w-2/3 rounded-full opacity-25" style={{ background: accent }} />
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="h-20 rounded-lg" style={{ background: "rgba(255,255,255,0.5)" }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Projects() {
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
   const project = projects[active];
+  const total = String(projects.length).padStart(2, "0");
 
   const go = (idx: number) => {
     setDirection(idx > active ? 1 : -1);
     setActive(idx);
   };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      if (e.key === "ArrowRight" && active < projects.length - 1) go(active + 1);
+      if (e.key === "ArrowLeft" && active > 0) go(active - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
 
   const variants = {
     enter: (d: number) => ({ opacity: 0, y: d > 0 ? 40 : -40 }),
@@ -320,7 +421,7 @@ export default function Projects() {
               {/* Meta row */}
               <div className="flex flex-wrap items-center gap-3 text-xs font-mono tracking-widest text-muted-foreground">
                 <span style={{ color: project.accent }}>
-                  {project.index} / {project.total}
+                  {project.index} / {total}
                 </span>
                 <span>·</span>
                 <span>{project.category}</span>
@@ -330,7 +431,7 @@ export default function Projects() {
                   className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-[10px]"
                   style={{ background: project.statusColor }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-white opacity-80 animate-pulse" />
+                  <span className={`w-1.5 h-1.5 rounded-full bg-white opacity-80 ${project.live ? "animate-pulse" : ""}`} />
                   {project.status}
                 </span>
               </div>
@@ -381,8 +482,12 @@ export default function Projects() {
                 {project.screenshots.map((c, i) => (
                   <div
                     key={i}
-                    className="relative w-[70px] h-[112px] rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-white/10"
-                    style={{ background: `linear-gradient(160deg, ${c}cc, ${c}88)` }}
+                    className={`relative rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-white/10 ${project.type === "web" ? "w-[112px] h-[70px]" : "w-[70px] h-[112px]"}`}
+                    style={
+                      project.images?.[i]
+                        ? { background: `url(${project.images[i]}) center top / cover` }
+                        : { background: `linear-gradient(160deg, ${c}cc, ${c}88)` }
+                    }
                   >
                     <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-white/60">
                       0{i + 1}
@@ -427,7 +532,7 @@ export default function Projects() {
         </div>
 
         {/* RIGHT — phone */}
-        <div className="flex-1 flex items-center justify-center lg:pl-10 w-full min-h-[560px]">
+        <div className={`flex-1 flex items-center justify-center lg:pl-10 w-full ${project.type === "web" ? "min-h-[320px]" : "min-h-[560px]"}`}>
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={active}
@@ -443,11 +548,21 @@ export default function Projects() {
               transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
               className="w-full flex items-center justify-center"
             >
-              <PhoneFrame
-                accent={project.accent}
-                screenshots={project.screenshots}
-                icon={project.icon}
-              />
+              {project.type === "web" ? (
+                <BrowserFrame
+                  accent={project.accent}
+                  screenshots={project.screenshots}
+                  icon={project.icon}
+                  url={project.demo}
+                  image={project.images?.[0]}
+                />
+              ) : (
+                <PhoneFrame
+                  accent={project.accent}
+                  screenshots={project.screenshots}
+                  icon={project.icon}
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -460,6 +575,9 @@ export default function Projects() {
             <button
               key={i}
               onClick={() => go(i)}
+              aria-label={`Show ${p.name}`}
+              aria-current={i === active}
+              title={p.name}
               className="flex-shrink-0 flex flex-col items-center gap-1.5 group"
             >
               <div
@@ -495,7 +613,7 @@ export default function Projects() {
         </div>
         <div className="mt-2 flex justify-between text-[10px] font-mono text-muted-foreground tracking-widest">
           <span>SELECTED WORK</span>
-          <span>{project.index} / {project.total}</span>
+          <span>{project.index} / {total}</span>
         </div>
       </div>
     </section>
