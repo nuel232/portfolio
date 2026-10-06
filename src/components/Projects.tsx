@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GitBranch, ExternalLink, Play } from "lucide-react";
+import { GitBranch, ExternalLink, ShoppingBag, Shield, GraduationCap, Bot, MessageSquare, Activity, TrendingUp, Wallet, type LucideIcon } from "lucide-react";
 
 const projects = [
   {
@@ -22,7 +22,7 @@ const projects = [
     screenshots: ["#e2e8f0", "#cbd5e1", "#94a3b8"],
     accent: "#6366f1",
     bg: "from-indigo-50 to-violet-50 dark:from-indigo-950/30 dark:to-violet-950/30",
-    emoji: "🛍️",
+    icon: ShoppingBag,
   },
   {
     index: "02",
@@ -41,7 +41,7 @@ const projects = [
     screenshots: ["#d1fae5", "#a7f3d0", "#6ee7b7"],
     accent: "#10b981",
     bg: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30",
-    emoji: "⛓️",
+    icon: Shield,
   },
   {
     index: "03",
@@ -55,12 +55,12 @@ const projects = [
     role: "Lead Developer",
     company: "BlockDegrees",
     stack: ["HARDHAT", "SOLIDITY", "NEO4J", "NODE.JS"],
-    github: "https://github.com/nuel232/blockchain-project",
+    github: "https://github.com/nuel232/BlockDegrees",
     demo: null,
     screenshots: ["#ede9fe", "#ddd6fe", "#c4b5fd"],
     accent: "#8b5cf6",
     bg: "from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30",
-    emoji: "🎓",
+    icon: GraduationCap,
   },
   {
     index: "04",
@@ -74,12 +74,12 @@ const projects = [
     role: "Solo Developer",
     company: "Personal Project",
     stack: ["REACT", "EXPRESS", "GEMINI AI", "NODE.JS"],
-    github: "https://github.com/nuel232/Interactive-Basketball-Coaching-Assistant",
+    github: "https://github.com/nuel232/coach-carter",
     demo: null,
     screenshots: ["#fef3c7", "#fde68a", "#fcd34d"],
     accent: "#f59e0b",
     bg: "from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30",
-    emoji: "🏀",
+    icon: Bot,
   },
   {
     index: "05",
@@ -98,7 +98,7 @@ const projects = [
     screenshots: ["#dbeafe", "#bfdbfe", "#93c5fd"],
     accent: "#3b82f6",
     bg: "from-blue-50 to-sky-50 dark:from-blue-950/30 dark:to-sky-950/30",
-    emoji: "💬",
+    icon: MessageSquare,
   },
   {
     index: "06",
@@ -117,7 +117,7 @@ const projects = [
     screenshots: ["#fee2e2", "#fecaca", "#fca5a5"],
     accent: "#ef4444",
     bg: "from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30",
-    emoji: "🏀",
+    icon: Activity,
   },
   {
     index: "07",
@@ -136,7 +136,7 @@ const projects = [
     screenshots: ["#dcfce7", "#bbf7d0", "#86efac"],
     accent: "#22c55e",
     bg: "from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30",
-    emoji: "💰",
+    icon: Wallet,
   },
 ];
 
@@ -144,24 +144,13 @@ const projects = [
 const PhoneFrame = ({
   accent,
   screenshots,
-  headline,
-  emoji,
+  icon: Icon,
 }: {
   accent: string;
   screenshots: string[];
-  headline: string;
-  emoji: string;
+  icon: LucideIcon;
 }) => (
   <div className="relative flex items-center justify-center w-full h-full select-none">
-    {/* Decorative camera metadata */}
-    <div className="absolute top-4 right-0 text-[10px] font-mono tracking-widest text-gray-400 dark:text-gray-600 hidden lg:flex flex-col items-end gap-1">
-      <div className="flex items-center gap-1">
-        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
-        <span>[ 26mm · f/1.8 · 1/200s ]</span>
-        <span className="w-3 h-px bg-gray-400 dark:bg-gray-600" />
-      </div>
-    </div>
-
     {/* Phone SVG shell */}
     <div className="relative" style={{ width: 260, height: 530 }}>
       {/* Outer frame */}
@@ -218,8 +207,8 @@ const PhoneFrame = ({
           {/* App bar */}
           <div className="px-5 py-3 flex items-center justify-between" style={{ background: accent + "22" }}>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-base" style={{ background: accent + "33" }}>
-                {emoji}
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: accent + "33" }}>
+                <Icon size={14} style={{ color: accent }} />
               </div>
               <div className="h-2.5 w-20 rounded-full opacity-40" style={{ background: accent }} />
             </div>
@@ -357,10 +346,10 @@ export default function Projects() {
               {/* App identity */}
               <div className="flex items-center gap-3">
                 <div
-                  className="w-11 h-11 rounded-2xl flex items-center justify-center text-2xl shadow-md flex-shrink-0"
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0"
                   style={{ background: project.accent + "22", border: `1px solid ${project.accent}33` }}
                 >
-                  {project.emoji}
+                  <project.icon size={20} style={{ color: project.accent }} />
                 </div>
                 <div>
                   <p className="font-semibold text-sm">{project.name}</p>
@@ -431,9 +420,7 @@ export default function Projects() {
                     Live Demo
                   </a>
                 )}
-                <button className="w-9 h-9 rounded-full border border-foreground/20 flex items-center justify-center hover:bg-foreground/5 transition-colors">
-                  <Play size={13} />
-                </button>
+
               </div>
             </motion.div>
           </AnimatePresence>
@@ -459,8 +446,7 @@ export default function Projects() {
               <PhoneFrame
                 accent={project.accent}
                 screenshots={project.screenshots}
-                headline={project.headline}
-                emoji={project.emoji}
+                icon={project.icon}
               />
             </motion.div>
           </AnimatePresence>
@@ -477,7 +463,7 @@ export default function Projects() {
               className="flex-shrink-0 flex flex-col items-center gap-1.5 group"
             >
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all duration-300"
+                className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300"
                 style={{
                   background: i === active ? p.accent + "22" : "transparent",
                   border: `1.5px solid ${i === active ? p.accent : "transparent"}`,
@@ -485,7 +471,7 @@ export default function Projects() {
                   opacity: i === active ? 1 : 0.45,
                 }}
               >
-                {p.emoji}
+                <p.icon size={18} style={{ color: i === active ? p.accent : "currentColor", opacity: i === active ? 1 : 0.55 }} />
               </div>
               {i === active && (
                 <motion.div
